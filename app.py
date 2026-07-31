@@ -1,6 +1,7 @@
 import streamlit as st
 from nlp import CustomerFeedbackAnalyzer
 import json
+import re
 from database import DatabaseManager
 
 @st.cache_resource
@@ -49,8 +50,12 @@ if st.button("Analyze Feedback", type="primary"):
             summary_raw = result['summary']
             
             try:
-                # Llama 3 is instructed to return JSON
-                summary_data = json.loads(summary_raw)
+                # Llama 3 sometimes prepends text. Try to extract just the JSON.
+                json_match = re.search(r'\{.*\}', summary_raw, re.DOTALL)
+                if json_match:
+                    summary_data = json.loads(json_match.group())
+                else:
+                    summary_data = json.loads(summary_raw)
                 
                 liked = summary_data.get("liked", [])
                 disliked = summary_data.get("disliked", [])
@@ -63,13 +68,15 @@ if st.button("Analyze Feedback", type="primary"):
                 if "error" in summary_data:
                     st.error(summary_data["error"])
                     
-                # Save to database
-                db = get_db()
-                db.save_analysis(feedback, sentiment, score, liked, disliked)
-                    
             except json.JSONDecodeError:
                 # Fallback if Llama 3 outputs raw text instead of strict JSON
                 st.write(summary_raw)
+                liked = [summary_raw]
+                disliked = []
+                
+            # Always save to database, even if JSON parsing fails
+            db = get_db()
+            db.save_analysis(feedback, sentiment, score, liked, disliked)
 
 # --- History Section ---
 st.divider()
