@@ -1,0 +1,25 @@
+Setup a virtual enviornment:
+
+python -m venv venv
+
+Then activate it using:
+
+venv/Scripts/activate
+
+Once the enviornment in activated, run following command:
+pip install pandas nltk google-generativeai python-dotenv
+
+This will install all required dependencies
+
+Then run this command:
+python -m nltk.downloader vader_lexicon
+
+This will install necessary packages.
+
+Now Create a .env file in the same dir and add your GEMINI_API_KEY
+.env:
+GEMINI_API_KEY = "your_api_key_here"
+
+Save the file and now just run the script using:
+
+python nlp.py

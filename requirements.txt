@@ -1,0 +1,6 @@
+pandas
+nltk
+boto3
+streamlit
+pymysql
+python-dotenv
