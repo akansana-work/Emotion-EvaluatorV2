@@ -73,3 +73,19 @@ class DatabaseManager:
         except Exception as e:
             print(f"Error saving analysis: {e}")
             return False
+
+    def get_history(self, limit=10):
+        """Fetch recent analysis history from RDS."""
+        if not self.connection:
+            print("Database not connected. Cannot fetch history.")
+            return []
+            
+        query = "SELECT * FROM feedback_analysis ORDER BY created_at DESC LIMIT %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (limit,))
+                records = cursor.fetchall()
+                return records
+        except Exception as e:
+            print(f"Error fetching history: {e}")
+            return []

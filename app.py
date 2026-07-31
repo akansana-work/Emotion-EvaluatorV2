@@ -70,3 +70,25 @@ if st.button("Analyze Feedback", type="primary"):
             except json.JSONDecodeError:
                 # Fallback if Llama 3 outputs raw text instead of strict JSON
                 st.write(summary_raw)
+
+# --- History Section ---
+st.divider()
+db = get_db()
+with st.expander("🕒 View Recent Analysis History"):
+    if st.button("Refresh History"):
+        # Just having a button here triggers a rerun and fetches new history
+        pass
+        
+    history = db.get_history(limit=5)
+    if history:
+        for record in history:
+            st.markdown(f"**Feedback:** {record['feedback_text']}")
+            st.markdown(f"**Sentiment:** {record['sentiment'].upper()} (Score: {record['score']})")
+            if record['liked']:
+                st.markdown(f"**Liked:** {record['liked']}")
+            if record['disliked']:
+                st.markdown(f"**Disliked:** {record['disliked']}")
+            st.caption(f"Analyzed on: {record['created_at']}")
+            st.divider()
+    else:
+        st.info("No history found or database not connected.")
