@@ -51,14 +51,19 @@ Wait for your instance to start, then SSH into it using your terminal:
 ssh -i /path/to/your-key.pem ubuntu@<your-ec2-public-ip>
 ```
 
-### Step 1: Prepare the Environment
-Run the following commands on the server to install Python and necessary tools:
+### Step 1: Prepare the Server and Install Miniconda
+Run the following commands on the server to update it, install tools, and set up Miniconda for a stable Python 3.10 environment:
 ```bash
-# Update packages
+# Update packages and install tools
 sudo apt update -y
+sudo apt install git wget build-essential -y
 
-# Install pip and venv
-sudo apt install python3-pip python3-venv -y
+# Download and install Miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+source $HOME/miniconda/bin/activate
+conda init
+source ~/.bashrc
 
 # Clone your repository (replace with your actual github link)
 git clone <your-github-repo-url>
@@ -66,11 +71,11 @@ cd <your-repo-folder>
 ```
 
 ### Step 2: Install Dependencies
-Create an isolated virtual environment and install the required Python packages.
+Create an isolated Conda environment and install the required Python packages.
 ```bash
-# Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate
+# Create and activate conda environment
+conda create -n emotion_env python=3.10 -y
+conda activate emotion_env
 
 # Install requirements
 pip install -r requirements.txt
