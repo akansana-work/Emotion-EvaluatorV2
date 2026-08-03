@@ -74,6 +74,7 @@ cd <your-repo-folder>
 Create an isolated Conda environment and install the required Python packages.
 ```bash
 # Create and activate conda environment
+conda create --override-channels -c conda-forge -n emotion_env python=3.10 -y
 conda create -n emotion_env python=3.10 -y
 conda activate emotion_env
 
